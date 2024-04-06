@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS Majors (
 
 CREATE TABLE IF NOT EXISTS Languages (
     language_id INTEGER PRIMARY KEY,
-    language_name TEXT NOT NULL UNIQUE,
+    language_name TEXT NOT NULL UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS Courses (
