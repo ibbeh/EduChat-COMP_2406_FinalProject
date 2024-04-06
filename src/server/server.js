@@ -36,7 +36,11 @@ function headerLogger(request, response, next){
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, ROOT_DIR, 'views'));
 
+//JSON parsing middleware
+app.use(express.json())
+
 app.use('/', routes)
+
 
 //Static file serving middleware to serve static files from ROOT_DIR
 app.use(express.static(path.join(__dirname, ROOT_DIR)))

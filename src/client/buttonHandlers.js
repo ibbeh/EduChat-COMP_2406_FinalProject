@@ -2,9 +2,6 @@
 function handleRegistrationSubmit(event) {
     event.preventDefault() //Prevent the form from submitting with default behaviour
 
-    console.log(document.getElementById('languages').value);
-
-
     //Directly collecting values from form elements
     const data = {
     firstName: document.getElementById('firstName').value,
@@ -19,16 +16,15 @@ function handleRegistrationSubmit(event) {
 
     //Collecting checkbox values for interests
     document.querySelectorAll('#interestsSelection .form-check-input:checked').forEach(function(checkbox) {
-        data.interests.push(checkbox.value);
+        data.interests.push(checkbox.value)
     })
 
     //Collecting checkbox values for courses
     document.querySelectorAll('#courseSelection .form-check-input:checked').forEach(function(checkbox) {
-        data.courses.push(checkbox.value);
+        data.courses.push(checkbox.value)
     })
-
     
-    console.log(data)
+    console.log("DATA SUBMITTED TO THE FORM:", data)
 
     //Perform client-side validation to ensure all of the fields are filled out correctly
     //i.e. none of the fields can be empty, there can be a minimum of 3 interests and a maximum of 5 enrolled courses.
@@ -39,10 +35,12 @@ function handleRegistrationSubmit(event) {
 
     if (data.interests.length < 3) {
         alert("You must choose at least 3 interests.")
+        return
     }
 
     if(data.courses.length > 5) {
         alert("You must choose at most 5 courses.")
+        return
     }
 
 
@@ -50,7 +48,7 @@ function handleRegistrationSubmit(event) {
     const emailRegex = /^\S+@\S+\.\S+$/;
     if (!emailRegex.test(data.email)) {
         alert("Please enter a valid email address.");
-        return;
+        return
     }
 
     //Send the data to the server using fetch API
@@ -65,9 +63,9 @@ function handleRegistrationSubmit(event) {
             alert(`Error: ${responseData.error}`)
         } 
         else {
-            alert('Registration successful') //Notify the user of successful registratio
+            alert('Registration successful! Redirecting you to the login page where you may now login.') //Notify the user of successful registration
             // registrationForm.reset() //Reset the form
-            window.location.href = '/' //Redirect to the login pa
+            window.location.href = '/' //Redirect to the login page
         }
     })
     .catch(error => {

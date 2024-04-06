@@ -3,9 +3,13 @@ const router = express.Router()
 const sqlite3 = require('sqlite3').verbose() //Verbose provides more detailed stack trace
 // Connect to the Database
 const db = new sqlite3.Database('../../database/eduChatDatabase.db', sqlite3.OPEN_READWRITE, (err) => {
-    if (err) console.error(err.message);
-    else console.log('Connected to the SQLite database.');
-});
+    if (err) {
+        console.error('Error connecting to the database: ', err.message)
+    }
+    else {
+        console.log('Connected to the SQLite database successfully!')
+    }
+})
 
 
 router.get('/getRegistrationForm', function(request, response) {
@@ -46,7 +50,55 @@ router.get('/getRegistrationForm', function(request, response) {
         });
     });
 });
+
+
+
+router.post('/registerStudent', function(request, response) {
+    console.log("DATA FROM THE FORM RECIEVED BY THE SERVER: ", request.body)
+    const { firstName, lastName, email, password, major, languages, interests, courses } = request.body
     
+    //Revalidating the data on the server side (ensuring all fields are filled out and there is a minimum of 3 interests and a maximum of 5 courses)
+    if (!email || !firstName || !lastName || !password || !major || interests.length < 3 || courses.length > 5) {
+        return response.status(400).json({ error: "Please fill all required fields with valid data!" })
+    }
+
+    // Check for unique email
+    db.get("SELECT * FROM Students WHERE email = ?", [email], (err, row) => {
+        if (err) {
+            console.error(err.message);
+            return response.status(500).json({ error: "Database operation failed!" })
+        }
+        if (row) {
+            return response.status(400).json({ error: "An account with this email already exists. Emails must be unique." })
+        }
+        
+        //Insert into Students
+        db.run("INSERT INTO Students (first_name, last_name, email, password, major_id, secondary_language_id) VALUES (?, ?, ?, ?, ?, ?)", 
+               [firstName, lastName, email, password, major, languages], function(err) {
+            if (err) {
+                console.error(err.message);
+                return response.status(500).json({ error: "Failed to insert student!" })
+            }
+            const studentId = this.lastID
+            
+            //Insert courses and interests
+            courses.forEach(courseId => {
+                db.run("INSERT INTO TakesCourses (student_id, course_id) VALUES (?, ?)", [studentId, courseId], (err) => {
+                    if (err) console.error(err.message)
+                })
+            })
+            
+            interests.forEach(interestId => {
+                db.run("INSERT INTO HasInterests (student_id, interest_id) VALUES (?, ?)", [studentId, interestId], (err) => {
+                    if (err) console.error(err.message)
+                })
+            })
+            
+            return response.json({ message: "Registration successful!" })
+        })
+    })
+})
+
 
 // // Example route: Fetch all majors
 // router.get('/api/majors', (req, res) => {
