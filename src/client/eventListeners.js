@@ -25,13 +25,22 @@ function setupFormEventListener() {
     }
 }
 
+function setupLoginEventListener() {
+    const loginForm = document.getElementById("loginForm");
+    if (loginForm) {
+        loginForm.addEventListener("submit", handleLoginSubmit);
+    }
+}
+
+
 function loadForm(url) {
     fetch(url)
         .then(response => response.text())
         .then(html => {
             document.querySelector(".container").innerHTML = html
             setupEventListeners() //Re-setup event listeners after new content is loaded for links
-            setupFormEventListener() //For the registration form
+            setupFormEventListener() //Setup event listeners For the registration form
+            setupLoginEventListener(); //Setup event listeners for login form
         })
         .catch(error => console.error('Error loading form:', error))
 }
@@ -39,4 +48,5 @@ function loadForm(url) {
 document.addEventListener("DOMContentLoaded", function() {
     setupEventListeners()
     setupFormEventListener()
+    setupLoginEventListener()
 })

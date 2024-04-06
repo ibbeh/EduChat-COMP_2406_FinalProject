@@ -32,12 +32,23 @@ function headerLogger(request, response, next){
 //Register middleware with dispatcher (ORDER MATTERS HERE)
 //Middleware
 
+//JSON parsing middleware
+app.use(express.json())
+
+
+//Use morgan for HTTP request logging
+app.use(morganLogger('dev'))
+
+//Use custom loggers
+//app.use(methodLogger)
+//app.use(headerLogger)
+
+//Use routes from the routes module
+app.use(routes)
+
 // Set up Handlebars view engine
 app.set('view engine', 'hbs');
 app.set('views', path.join(__dirname, ROOT_DIR, 'views'));
-
-//JSON parsing middleware
-app.use(express.json())
 
 app.use('/', routes)
 
@@ -75,7 +86,9 @@ app.get('/getLoginForm', (request, response) => {
     }
 })
 
-
+app.get('/chatroom', (request, response) => {
+    response.render('chatroom', { title: 'Chatroom' })
+})
 
 //404 Handler
 app.use((request, response) => {
@@ -83,20 +96,15 @@ app.use((request, response) => {
     response.status(404).send('404: File Not Found');
 })
 
-//Use morgan for HTTP request logging
-app.use(morganLogger('dev'))
-//Use custom loggers
-app.use(methodLogger)
-app.use(headerLogger)
-//Use routes from the routes module
-app.use(routes)
-
 //Start the server
 app.listen(PORT, err => {
     if(err) console.log(err)
     else {
           console.log(`Server listening on port: ${PORT} CTRL:-C to stop`)
           console.log(`To Test:`)
+          console.log('http://localhost:3000/')
+          console.log('http://localhost:3000/index.html')
+		  console.log('http://localhost:3000/users')
       }
   })
 

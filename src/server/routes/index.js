@@ -100,6 +100,33 @@ router.post('/registerStudent', function(request, response) {
 })
 
 
+
+router.post('/login', function(request, response) {
+    console.log("CLIENT REQUESTED TO LOGIN WITH CREDENTIALS: ", request.body)
+    const { email, password } = request.body;
+
+    // Query the database for a user with the provided email
+    db.get("SELECT * FROM Students WHERE email = ?", [email], (err, user) => {
+        if (err) {
+            console.error("Database Error:", err.message);
+            return response.status(500).json({ error: "Internal Server Error" });
+        }
+        if (!user) {
+            return response.status(401).json({ error: "Invalid email! Try registering an account with this email." });
+        }
+
+        // Check if the provided password matches the stored password
+        if (user.password === password) {
+            // Login successful
+            response.json({ message: "Login Successful" });
+        } else {
+            // Password does not match
+            response.status(401).json({ error: "Incorrect password for the account with this email!" });
+        }
+    });
+});
+
+
 // // Example route: Fetch all majors
 // router.get('/api/majors', (req, res) => {
 //     db.all("SELECT * FROM Majors", [], (err, rows) => {

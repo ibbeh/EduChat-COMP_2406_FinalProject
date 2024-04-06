@@ -76,3 +76,32 @@ function handleRegistrationSubmit(event) {
 }
 
 // module.exports = { handleRegistrationSubmit }
+
+
+function handleLoginSubmit(event) {
+    event.preventDefault(); // Prevent default form submission
+
+    const email = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+
+    // Send the login credentials to the server
+    fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+    })
+    .then(response => response.json())
+    .then(responseData => {
+        if (responseData.error) {
+            alert(`Login Failed: ${responseData.error}`);
+        } else {
+            alert('Login Successful! Redirecting...');
+            // Handle successful login, e.g., redirecting to another page
+            window.location.href = '/chatroom'
+        }
+    })
+    .catch(error => {
+        console.error('Login Error:', error);
+        alert('An error occurred during login. Please try again.');
+    });
+}
