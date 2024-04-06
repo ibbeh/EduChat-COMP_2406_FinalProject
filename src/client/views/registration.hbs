@@ -1,0 +1,79 @@
+<link rel="stylesheet" href="../registration.css">
+<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet"> 
+<div class ="container">
+    <h2 class ="mt-5">Student Registration</h2>
+    <form id="registrationForm">
+        <!-- First Name -->
+        <div class ="form-group">
+            <label for="firstName">First Name</label>
+            <input type="text" class="form-control" id="firstName" placeholder="Enter first name">
+        </div>
+        <!-- First Name -->
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input type="text" class="form-control" id="lastName" placeholder="Enter last name">
+        </div>
+        <!-- Email -->
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter email">
+        </div>
+        <!-- Password -->
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter password">
+        </div>
+        <!-- Languages Dropdown -->
+        <div class="form-group">
+            <label for="languages">Language Other Than English</label>
+                <select  class="form-control" id="languages">
+                    <option value="none">I don't know any other languages</option>
+                    {{#each languages}}
+                        <option value="{{this.language_id}}">{{this.language_name}}</option>
+                    {{/each}}  
+                </select>
+        </div>
+        <!-- Interests Checkboxes -->
+        <div class="form-group">
+            <label>Choose Some Interests</label>
+            <div id="interestsSelection">
+                {{#each interests}}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="{{this.interest_id}}" id="interest{{this.interest_id}}">
+                        <label class="form-check-label" for="interest{{this.interest_id}}">{{this.interest_name}}
+                        </label>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+        <!-- Majors Dropdown -->
+        <div class="form-group">
+            <label for="major">Major</label>
+            <select class="form-control" id="major">
+                {{#each majors}}
+                    <option value="{{this.major_id}}">{{this.major_name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <!-- Courses Selection -->
+        <div class="form-group">
+            <label>Select Enrolled Courses (Maximum 5):</label>
+            <div id="courseSelection">
+                {{#each courses}}
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="{{this.course_id}}" id="course{{this.course_id}}">
+                        <label class="form-check-label" for="course{{this.course_id}}">
+                            {{this.course_code}} - {{this.course_name}}
+                        </label>
+                    </div>
+                {{/each}}
+            </div>
+        </div>
+        <!-- Submit Button -->
+        <button type="submit" class="btn-primary">Submit</button>
+        <!-- Back to Sign in Page -->
+        <div class="sign-in">
+            <a href="javascript:void(0);" id="backToSignIn"><br>Go back to sign in</a>
+        </div>
+    </form>
+</div>

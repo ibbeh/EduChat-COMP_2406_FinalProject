@@ -2,10 +2,12 @@ const http = require ('http')
 const express = require('express')
 const path = require('path')
 const morganLogger = require('morgan')
+const hbs = require('hbs') 
 const routes = require('./routes/index') //Import routes
 
 const app = express() //Create express middleware dispatcher
 const PORT = process.env.PORT || 3000
+const ROOT_DIR = '../client' //Root directory to serve static client side files from
 
 app.locals.pretty = true //To generate pretty view-source code in browser
 
@@ -29,6 +31,53 @@ function headerLogger(request, response, next){
 
 //Register middleware with dispatcher (ORDER MATTERS HERE)
 //Middleware
+
+// Set up Handlebars view engine
+app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, ROOT_DIR, 'views'));
+
+app.use('/', routes)
+
+//Static file serving middleware to serve static files from ROOT_DIR
+app.use(express.static(path.join(__dirname, ROOT_DIR)))
+
+app.get('/index.html', (request, response) => {
+    response.render('index', { title: 'Login Page' }) //Will render index.hbs with layout.hbs as the layout
+})
+
+app.get('/', (request, response) => {
+    response.render('index', { title: 'Login Page' }) //Will render index.hbs with layout.hbs as the layout
+})
+
+ 
+app.get('/getRegistrationForm', (request, response) => {
+    //Only enter the registration form page if it is through the login page
+    // if (request.headers['x-requested-with'] === 'XMLHttpRequest') {
+        response.render('registration', { title: 'Registration Page', layout: false })  //Renders registration.hbs without using layout.hbs
+    // } 
+    // else {
+        //Redirect to the home page if user tries to access the registration form page via the url
+    //     response.redirect('/')
+    // }
+})
+
+app.get('/getLoginForm', (request, response) => {
+    if (request.headers['x-requested-with'] === 'XMLHttpRequest') {
+        response.render('index', { layout: false }) //Renders without using layout.hbs
+    }
+    else {
+        //Redirect to the home page if user tries to access this url directly
+        response.redirect('/');
+    }
+})
+
+
+
+//404 Handler
+app.use((request, response) => {
+    console.log('ERROR: File Not Found');
+    response.status(404).send('404: File Not Found');
+})
 
 //Use morgan for HTTP request logging
 app.use(morganLogger('dev'))

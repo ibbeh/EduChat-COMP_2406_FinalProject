@@ -1,0 +1,114 @@
+/* General Styles */
+
+/* Sets default margin and padding for the whole document and sets a default font */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'Open Sans', Arial, sans-serif;
+}
+/* Styles for the body element, setting a background image, ensuring it covers the entire background, centers correctly, and doesn't scroll with the page */
+body {
+    background-image: url(./images/background2.jpg); /* Shared background */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-attachment: fixed;
+}
+
+/* Shared Container Styles */
+.container {
+    background-color: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px black;
+    transition: all 0.3s ease-in-out;
+    margin-top: 60px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Shared Form Group Styles */
+.form-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+/* Styles for labels within form groups, positioning them absolutely relative to their parent form-group */
+.form-group label {
+    font-weight: bold; /* Make labels bold */
+    color: #555; /* Consistent label color */
+    position: absolute;
+    top: -21px;
+    left: 10px;
+    background-color: #fff;
+    padding: 0 5px;
+    font-size: 14px;
+}
+
+/* Input field styles, including width, padding, border, and transitions for the focus state */
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ced4da; 
+    border-radius: 5px; /* Slightly rounded borders for form controls */
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+/* Focus state for input fields, removing the outline and changing border color */
+.form-group input:focus {
+    outline: none;
+    border-color: #007bff;
+}
+
+/* Button Styles */
+button, .btn-primary {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+/* Hover state for the button, changing the background color */
+button:hover, .btn-primary:hover {
+    background-color: #0056b3;
+}
+
+/* Additional Styles for Registration Form */
+
+/* Animation & Misc */
+.container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.welcome-message h1, h2 {
+    text-align: center;
+    color: #333; /* Consistent heading color */
+    margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: normal;
+}
+
+.forgot-password, .sign-in {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.forgot-password a, .sign-in a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+/* Adds underline on forgot password hover */
+.forgot-password a:hover, .sign-in a:hover {
+    text-decoration: underline;
+}

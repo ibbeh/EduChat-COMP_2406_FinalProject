@@ -1,0 +1,3 @@
+Title of the webpage doesn't change when navigating different pages
+Three boxes on top of each other in the registration webpage
+method and header loggers dont appear in server side console

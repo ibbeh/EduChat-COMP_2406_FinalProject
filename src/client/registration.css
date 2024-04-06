@@ -1,0 +1,86 @@
+/* Styles for the body element, setting a background image, ensuring it covers the entire background, centers correctly, and doesn't scroll with the page */
+body {
+    background-image: url(./images/background1.jpg); /* Replace with your image URL */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-attachment: fixed;
+    font-family: 'Open Sans', Arial, sans-serif;
+  }
+  
+/* Styles for the main container */
+  .container{
+    background-color: white;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px black;
+    transition: all 0.3s ease-in-out;
+    margin-top: 60px;
+    margin-bottom: 20px;
+    position: relative;
+  }
+ 
+/*Styles for the header of the form */
+h2 {
+    color: #333;
+    /* Darker font color for the heading */
+    margin-top: 10px;
+    text-align: center;
+}
+
+/* Styles for all the labels in the form */
+.form-group label {
+    font-weight: bold;
+    color: #555;
+    /* Slightly lighter font color for labels */
+}
+
+/* Submit Button Styles */
+.btn-primary {
+    width: 100%;
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+/* Hover state for the button, changing the background color */
+.btn-primary:hover {
+    background-color: #003d73;
+    /* Darker shade on hover for the primary button */
+    border-color: #003157;
+}
+    
+/* Custom styles for input and select elements to slightly alter appearance */
+.form-control {
+    border-radius: 4px;
+    /* Slightly round the edges of form controls */
+    border: 1px solid #ced4da;
+    /* Default Bootstrap border color */
+}
+    
+/* Styling for the select element when multiple is enabled, making it visually more appealing */
+.form-control[multiple] {
+    height: auto;
+    /* Adjust height automatically based on the number of options */
+    padding: 5px;
+    /* Add some padding inside the select box */
+}
+
+
+/* Adds underline on forgot password hover */
+.forgot-password a:hover, .sign-in a:hover {
+    text-decoration: underline;
+}
+
+/* Adding a little animation to the container */
+.container:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
