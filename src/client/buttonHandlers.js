@@ -97,7 +97,8 @@ function handleLoginSubmit(event) {
         } else {
             alert('Login Successful! Redirecting...');
             // Handle successful login, e.g., redirecting to another page
-            window.location.href = '/chatroom'
+            //Dynamically loading the chatroom content
+            loadForm('/chatroom')
         }
     })
     .catch(error => {

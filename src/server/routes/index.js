@@ -43,13 +43,13 @@ router.get('/getRegistrationForm', function(request, response) {
                             interests,
                             majors,
                             courses
-                        });
-                    });
-                });
-            });
-        });
-    });
-});
+                        })
+                    })
+                })
+            })
+        })
+    })
+})
 
 
 
@@ -109,22 +109,38 @@ router.post('/login', function(request, response) {
     db.get("SELECT * FROM Students WHERE email = ?", [email], (err, user) => {
         if (err) {
             console.error("Database Error:", err.message);
-            return response.status(500).json({ error: "Internal Server Error" });
+            return response.status(500).json({ error: "Internal Server Error" })
         }
         if (!user) {
-            return response.status(401).json({ error: "Invalid email! Try registering an account with this email." });
+            return response.status(401).json({ error: "Invalid email! Try registering an account with this email." })
         }
 
         // Check if the provided password matches the stored password
         if (user.password === password) {
             // Login successful
-            response.json({ message: "Login Successful" });
-        } else {
+            request.session.loggedIn = true
+            request.session.username = email
+            response.json({ message: "Login Successful" })
+        } 
+        else {
             // Password does not match
-            response.status(401).json({ error: "Incorrect password for the account with this email!" });
+            response.status(401).json({ error: "Incorrect password for the account with this email!" })
         }
-    });
-});
+    })
+})
+
+
+router.post('/logout', (request, response) => {
+    if (request.session) {
+        request.session.destroy((err) => {
+            if(err) {
+                response.status(500).send("Could not log out! Please try again.")
+            } else {
+                response.send("Logout successful")
+            }
+        })
+    }
+})
 
 
 // // Example route: Fetch all majors

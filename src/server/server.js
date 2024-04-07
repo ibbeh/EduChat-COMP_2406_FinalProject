@@ -3,7 +3,8 @@ const express = require('express')
 const path = require('path')
 const morganLogger = require('morgan')
 const hbs = require('hbs') 
-const routes = require('./routes/index') //Import routes
+const routes = require('./routes/index') //Import 
+const session = require('express-session')
 
 const app = express() //Create express middleware dispatcher
 const PORT = process.env.PORT || 3000
@@ -29,6 +30,15 @@ function headerLogger(request, response, next){
     next() //Call next middleware registered
 }
 
+//Middleware to ensure user is logged in before being able to view certain pages
+function confirmAuthentication(request, response, next) {
+    if (request.session.loggedIn) {
+      next() //Proceed to next middleware
+    } else {
+      response.status(403).send('Unauthorized: Ensure you are logged in.')
+    }
+  }
+  
 //Register middleware with dispatcher (ORDER MATTERS HERE)
 //Middleware
 
@@ -42,6 +52,13 @@ app.use(morganLogger('dev'))
 //Use custom loggers
 //app.use(methodLogger)
 //app.use(headerLogger)
+
+app.use(session({
+    secret: 'secret_key', 
+    resave: false,
+    saveUninitialized: true,
+}))
+
 
 //Use routes from the routes module
 app.use(routes)
@@ -64,29 +81,16 @@ app.get('/', (request, response) => {
     response.render('index', { title: 'Login Page' }) //Will render index.hbs with layout.hbs as the layout
 })
 
- 
-app.get('/getRegistrationForm', (request, response) => {
-    //Only enter the registration form page if it is through the login page
-    // if (request.headers['x-requested-with'] === 'XMLHttpRequest') {
-        response.render('registration', { title: 'Registration Page', layout: false })  //Renders registration.hbs without using layout.hbs
-    // } 
-    // else {
-        //Redirect to the home page if user tries to access the registration form page via the url
-    //     response.redirect('/')
-    // }
+
+app.get('/getRegistrationForm',  (request, response) => {
+    response.render('registration', { title: 'Registration Page', layout: false })  //Renders registration.hbs without using layout.hbs
 })
 
 app.get('/getLoginForm', (request, response) => {
-    if (request.headers['x-requested-with'] === 'XMLHttpRequest') {
-        response.render('index', { layout: false }) //Renders without using layout.hbs
-    }
-    else {
-        //Redirect to the home page if user tries to access this url directly
-        response.redirect('/');
-    }
+    response.render('index', { layout: false }) //Renders without using layout.hbs
 })
 
-app.get('/chatroom', (request, response) => {
+app.get('/chatroom', confirmAuthentication, (request, response) => {
     response.render('chatroom', { title: 'Chatroom' })
 })
 
@@ -95,6 +99,7 @@ app.use((request, response) => {
     console.log('ERROR: File Not Found');
     response.status(404).send('404: File Not Found');
 })
+  
 
 //Start the server
 app.listen(PORT, err => {
