@@ -100,34 +100,51 @@ router.post('/registerStudent', function(request, response) {
 })
 
 
-
+    
 router.post('/login', function(request, response) {
-    console.log("CLIENT REQUESTED TO LOGIN WITH CREDENTIALS: ", request.body)
-    const { email, password } = request.body;
+        const {email, password} = request.body
 
-    // Query the database for a user with the provided email
-    db.get("SELECT * FROM Students WHERE email = ?", [email], (err, user) => {
-        if (err) {
-            console.error("Database Error:", err.message);
-            return response.status(500).json({ error: "Internal Server Error" })
-        }
-        if (!user) {
-            return response.status(401).json({ error: "Invalid email! Try registering an account with this email." })
-        }
+        //Query the database for a user with the provided email
+        db.get(`SELECT * FROM Students WHERE email = ?`, [email], (err, user) => {
+            if (err) {
+                console.error("Database Error:", err.message);
+                return response.status(500).json({ error: "Internal Server Error" })
+            }
+            if (!user) {
+                return response.status(401).json({ error: "Invalid email! Try registering an account with this email." })
+            }
+    
+            if (user.password !== password) {
+                return response.status(401).json({ error: "Incorrect password for the account with this email!" })
+            }
 
-        // Check if the provided password matches the stored password
-        if (user.password === password) {
-            // Login successful
-            request.session.loggedIn = true
+            //Assuming successful login below this point:
+            request.session.loggedIn = true;
+            request.session.userId = user.student_id;
             request.session.username = email
-            response.json({ message: "Login Successful" })
-        } 
-        else {
-            // Password does not match
-            response.status(401).json({ error: "Incorrect password for the account with this email!" })
-        }
-    })
-})
+            //response.json({ message: "Login Successful" })
+
+            //Fetch additional details: courses, interests, major, and languages (used to feed the chatbot data about the user)
+            const userData = {...user}
+            const promises = []
+            promises.push(fetchUserCourses(user.student_id, db))
+            promises.push(fetchUserInterests(user.student_id, db))
+            promises.push(fetchUserMajorAndLanguage(user.major_id, user.secondary_language_id, db))
+
+            Promise.all(promises).then(([courses, interests, { major, language }]) => {
+                userData.courses = courses
+                userData.interests = interests
+                userData.major = major
+                userData.language = language
+                request.session.userData = userData
+
+                response.json({ message: "Login Successful", userData })
+            }).catch(error => {
+                console.error("Error fetching user data! ", error)
+                response.status(500).json({ error: "Failed to fetch user data in the /login route!" })
+         })
+     })
+ })
 
 
 router.post('/logout', (request, response) => {
@@ -143,13 +160,36 @@ router.post('/logout', (request, response) => {
 })
 
 
-// // Example route: Fetch all majors
-// router.get('/api/majors', (req, res) => {
-//     db.all("SELECT * FROM Majors", [], (err, rows) => {
-//         if (err) res.status(500).json({ error: err.message });
-//         else res.json(rows);
-//     });
-// });
+function fetchUserCourses(studentId, db) {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT course_name FROM Courses JOIN TakesCourses ON Courses.course_id = TakesCourses.course_id WHERE student_id = ?`, [studentId], (err, rows) => {
+            if (err) {reject(err)}
+            else {resolve(rows.map(row => row.course_name))}
+        })
+    })
+}
+
+function fetchUserInterests(studentId, db) {
+    return new Promise((resolve, reject) => {
+        db.all(`SELECT interest_name FROM Interests JOIN HasInterests ON Interests.interest_id = HasInterests.interest_id WHERE student_id = ?`, [studentId], (err, rows) => {
+            if (err) {reject(err)}
+            else {resolve(rows.map(row => row.interest_name))}
+        })
+    })
+}
+
+function fetchUserMajorAndLanguage(majorId, languageId, db) {
+    return new Promise((resolve, reject) => {
+        db.get(`SELECT major_name FROM Majors WHERE major_id = ?`, [majorId], (err, majorRow) => {
+            if (err) {reject(err)}
+            db.get(`SELECT language_name FROM Languages WHERE language_id = ?`, [languageId], (err, languageRow) => {
+                if (err) {reject(err)}
+                else {resolve({ major: majorRow?.major_name, language: languageRow?.language_name })}
+            })
+        })
+    })
+}
+
 
 module.exports = router
 

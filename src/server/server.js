@@ -6,6 +6,10 @@ const hbs = require('hbs')
 const routes = require('./routes/index') //Import 
 const session = require('express-session')
 
+//Requiring custom module chat server
+const chatServer = require('./routes/chatServer')
+
+
 const app = express() //Create express middleware dispatcher
 const PORT = process.env.PORT || 3000
 const ROOT_DIR = '../client' //Root directory to serve static client side files from
@@ -45,7 +49,6 @@ function confirmAuthentication(request, response, next) {
 //JSON parsing middleware
 app.use(express.json())
 
-
 //Use morgan for HTTP request logging
 app.use(morganLogger('dev'))
 
@@ -57,6 +60,7 @@ app.use(session({
     secret: 'secret_key', 
     resave: false,
     saveUninitialized: true,
+    cookie: { secure: !true }
 }))
 
 
@@ -70,15 +74,18 @@ app.set('views', path.join(__dirname, ROOT_DIR, 'views'));
 app.use('/', routes)
 
 
+app.use(chatServer)
+
+
 //Static file serving middleware to serve static files from ROOT_DIR
 app.use(express.static(path.join(__dirname, ROOT_DIR)))
 
 app.get('/index.html', (request, response) => {
-    response.render('index', { title: 'Login Page' }) //Will render index.hbs with layout.hbs as the layout
+    response.render('index', { title: 'EduChat' }) //Will render index.hbs with layout.hbs as the layout
 })
 
 app.get('/', (request, response) => {
-    response.render('index', { title: 'Login Page' }) //Will render index.hbs with layout.hbs as the layout
+    response.render('index', { title: 'EduChat' }) //Will render index.hbs with layout.hbs as the layout
 })
 
 

@@ -4,6 +4,7 @@
     "express-session": "^1.18.0",
     "hbs": "^4.2.0",
     "morgan": "^1.10.0",
+    "openai": "^4.33.0",
     "sqlite3": "^5.1.7"
   }
 }

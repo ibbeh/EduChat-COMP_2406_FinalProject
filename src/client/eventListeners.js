@@ -54,6 +54,10 @@ function loadForm(url) {
             setupEventListeners() //Re-setup event listeners after new content is loaded for links
             setupFormEventListener() //Setup event listeners For the registration form
             setupLoginEventListener() //Setup event listeners for login form
+            // Explicitly call setupChatroomEventListeners if chatroom content is loaded
+            if (url.includes("chatroom") || document.getElementById("sendMsgBtn")) {
+                setupChatroomEventListeners()
+            }
         })
         .catch(error => console.error('Error loading form:', error))
 }
