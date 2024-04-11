@@ -1,3 +1,10 @@
+/*
+COMP 2406 Final Term Project
+By Ibraheem Refai
+101259968
+April 10, 2024
+*/
+
 //Function to handle the submission of the registration form
 function handleRegistrationSubmit(event) {
     event.preventDefault() //Prevent the form from submitting with default behaviour
@@ -75,16 +82,15 @@ function handleRegistrationSubmit(event) {
     })
 }
 
-// module.exports = { handleRegistrationSubmit }
 
 
 function handleLoginSubmit(event) {
-    event.preventDefault(); // Prevent default form submission
+    event.preventDefault() //Prevent default form submission
 
-    const email = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
+    const email = document.getElementById('username').value
+    const password = document.getElementById('password').value
 
-    // Send the login credentials to the server
+    //Send the login credentials to the server
     fetch('/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -93,16 +99,48 @@ function handleLoginSubmit(event) {
     .then(response => response.json())
     .then(responseData => {
         if (responseData.error) {
-            alert(`Login Failed: ${responseData.error}`);
+            alert(`Login Failed: ${responseData.error}`)
         } else {
-            alert('Login Successful! Redirecting...');
-            // Handle successful login, e.g., redirecting to another page
+            alert('Login Successful! Redirecting...')
+            //Handle successful login, e.g., redirecting to another page
             //Dynamically loading the chatroom content
             loadForm('/chatroom')
         }
     })
     .catch(error => {
-        console.error('Login Error:', error);
-        alert('An error occurred during login. Please try again.');
-    });
+        console.error('Login Error:', error)
+        alert('An error occurred during login! Please try again.')
+    })
+}
+
+function displayUsers(users) {
+    const usersContainer = document.getElementById("usersContainer")
+    usersContainer.innerHTML = "" //Clear existing users
+
+    //Create table like list of users
+    const ul = document.createElement("ul")
+    users.forEach(user => {
+        const li = document.createElement("li")
+        li.textContent = `ID: ${user.student_id}, Name: ${user.first_name} ${user.last_name}, Email: ${user.email}, Password: ${user.password}, Admin: ${user.isAdmin}`
+        ul.appendChild(li);
+    })
+    usersContainer.appendChild(ul)
+}
+
+
+//Buton handler for the view users button
+function handleViewUsersButton() {
+    fetch('/viewUsers')
+    .then(response => {
+        if (!response.ok && response.status === 403) {
+            alert("Unauthorized: Admin privileges required.")
+            throw new Error("Unauthorized");
+        }
+        return response.text()
+    })
+    .then(html => {
+        const container = document.querySelector(".container")
+        container.innerHTML = html
+    })
+    .catch(error => console.error("Error fetching users page:", error))
 }

@@ -1,3 +1,10 @@
+/*
+COMP 2406 Final Term Project
+By Ibraheem Refai
+101259968
+April 10, 2024
+*/
+
 /* Styles for the body element, setting a background image, ensuring it covers the entire background, centers correctly, and doesn't scroll with the page */
 body {
     background-image: url(./images/background1.jpg); /* Replace with your image URL */

@@ -1,3 +1,8 @@
+-- COMP 2406 Final Term Project
+-- By Ibraheem Refai
+-- 101259968
+-- April 10, 2024
+
 -- Computer Science Courses
 INSERT INTO Courses (major_id, course_name, course_code) VALUES (1, 'Introduction to Computer Science I', 'COMP 1405');
 INSERT INTO Courses (major_id, course_name, course_code) VALUES (1, 'Introduction to Computer Science II', 'COMP 1406');

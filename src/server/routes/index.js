@@ -1,7 +1,15 @@
+/*
+COMP 2406 Final Term Project
+By Ibraheem Refai
+101259968
+April 10, 2024
+*/
+
 const express = require('express')
 const router = express.Router()
 const sqlite3 = require('sqlite3').verbose() //Verbose provides more detailed stack trace
-// Connect to the Database
+
+//Connect to the Database
 const db = new sqlite3.Database('../../database/eduChatDatabase.db', sqlite3.OPEN_READWRITE, (err) => {
     if (err) {
         console.error('Error connecting to the database: ', err.message)
@@ -62,7 +70,7 @@ router.post('/registerStudent', function(request, response) {
         return response.status(400).json({ error: "Please fill all required fields with valid data!" })
     }
 
-    // Check for unique email
+    //Check for unique email
     db.get("SELECT * FROM Students WHERE email = ?", [email], (err, row) => {
         if (err) {
             console.error(err.message);
@@ -110,10 +118,11 @@ router.post('/login', function(request, response) {
                 console.error("Database Error:", err.message);
                 return response.status(500).json({ error: "Internal Server Error" })
             }
+            //If the email provided isn't found in the database
             if (!user) {
                 return response.status(401).json({ error: "Invalid email! Try registering an account with this email." })
             }
-    
+            //If the password doesn't match for the current email
             if (user.password !== password) {
                 return response.status(401).json({ error: "Incorrect password for the account with this email!" })
             }
@@ -122,6 +131,7 @@ router.post('/login', function(request, response) {
             request.session.loggedIn = true;
             request.session.userId = user.student_id;
             request.session.username = email
+            request.session.isAdmin = user.isAdmin
             //response.json({ message: "Login Successful" })
 
             //Fetch additional details: courses, interests, major, and languages (used to feed the chatbot data about the user)
@@ -141,12 +151,13 @@ router.post('/login', function(request, response) {
                 response.json({ message: "Login Successful", userData })
             }).catch(error => {
                 console.error("Error fetching user data! ", error)
-                response.status(500).json({ error: "Failed to fetch user data in the /login route!" })
+                response.status(500).json({ error: "Server Error: Failed to fetch user data in the /login route!" })
          })
      })
  })
 
 
+//Destroying all the users' cached data once they log out so no one can access their account until they log back in
 router.post('/logout', (request, response) => {
     if (request.session) {
         request.session.destroy((err) => {
@@ -189,6 +200,27 @@ function fetchUserMajorAndLanguage(majorId, languageId, db) {
         })
     })
 }
+
+
+router.get('/viewUsers', function(request, response) {
+    //Check if the user is logged in and is an admin
+    if (request.session.loggedIn && request.session.isAdmin) {
+        //Fetch all user information from the database
+        db.all(`SELECT * FROM Students`, (err, users) => {
+            if (err) {
+                console.error(err.message);
+                return response.status(500).send("Internal Server Error")
+            }
+            response.render('users', { 
+                title: 'View Users', 
+                users: users 
+            })
+        })
+    } else {
+        //If not logged in as an admin, respond with unauthorized status
+        response.status(403).send("Forbidden page: Admin privileges required.");
+    }
+})
 
 
 module.exports = router

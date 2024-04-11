@@ -1,15 +1,22 @@
-//Some of the setup code in this file is taken from the openai documentation website or inspired from it
+/*
+COMP 2406 Final Term Project
+By Ibraheem Refai
+101259968
+April 10, 2024
+*/
+
+//Some of the setup code in this file is taken from the openai documentation website or slightly modified from it
 //Source Cited: https://platform.openai.com/docs/api-reference/introduction
 
-//import OpenAI from "openai"
-
+//Open AI API key - Don't steal this please );
 const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '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'
 
 const express = require('express')
 const router = express.Router()
 
-const { Configuration, OpenAIApi } = require("openai");
-const { OpenAI } = require('openai');
+//Requiring neccessary npm openai modules
+const { Configuration, OpenAIApi } = require("openai")
+const { OpenAI } = require('openai')
 
 
 //Dictionary to store the courses aloing with a brief description of them
@@ -60,20 +67,6 @@ router.post('/chatWithBot', async function(request, response) {
     const courseDetails = generateCourseDetails(courses)
 
     //This is the prompt we construct to send to the openai api
-    // let prompt = `You are an expert AI assistant and tutor specialized in helping students with their courses, and anything else they need help with.
-    // You will be given data on them and will have to use this data to fulfill all their requests and help them with whatever issues they are having or whatever they want to chat about.
-    // The user is taking the following courses:
-    // ${courseDetails}
-
-    // The user is interested in: ${userData.interests.join(", ")}.
-    // The user is studying: ${userData.major}.
-    // Other than english, the strongest language the user speaks is: ${userData.language}.
-
-    // The following is a conversation with the user. Respond to their inquiries as helpfully as possible:
-
-    // User: ${userMessage}
-    // AI:`
-
     let prompt = `You are an expert AI assistant and tutor specialized in helping students with their courses, and anything else they need help with.
     You will be given data on them and will have to use this data to fulfill all their requests and help them with whatever issues they are having or whatever they want to chat about.
     The user is taking the following courses: ${courseDetails}.
@@ -95,7 +88,7 @@ router.post('/chatWithBot', async function(request, response) {
         })
 
         const responseMessage = APIResponse.choices[0]
-        chatConversationHistory += `User: ${userMessage}\nAI: ${responseMessage}\n`;
+        chatConversationHistory += `User: ${userMessage}\nAI: ${responseMessage}\n`
 
         //Sending back the AI's response to the client
         response.json({ message: responseMessage })

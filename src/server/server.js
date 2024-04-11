@@ -1,9 +1,16 @@
+/*
+COMP 2406 Final Term Project
+By Ibraheem Refai
+101259968
+April 10, 2024
+*/
+
 const http = require ('http')
 const express = require('express')
 const path = require('path')
 const morganLogger = require('morgan')
 const hbs = require('hbs') 
-const routes = require('./routes/index') //Import 
+const routes = require('./routes/index') //Requiring custom module for routes
 const session = require('express-session')
 
 //Requiring custom module chat server
@@ -23,7 +30,7 @@ function methodLogger(request, response, next){
     console.log("================================")
     console.log("METHOD: " + request.method)
     console.log("URL:" + request.url)
-    next(); //Call next middleware registered
+    next() //Call next middleware registered
 }
 
 //Middleware for logging request headers
@@ -56,6 +63,7 @@ app.use(morganLogger('dev'))
 //app.use(methodLogger)
 //app.use(headerLogger)
 
+//Express session middleware
 app.use(session({
     secret: 'secret_key', 
     resave: false,
@@ -67,15 +75,13 @@ app.use(session({
 //Use routes from the routes module
 app.use(routes)
 
-// Set up Handlebars view engine
-app.set('view engine', 'hbs');
-app.set('views', path.join(__dirname, ROOT_DIR, 'views'));
+//Set up Handlebars view engine
+app.set('view engine', 'hbs')
+app.set('views', path.join(__dirname, ROOT_DIR, 'views'))
 
 app.use('/', routes)
 
-
 app.use(chatServer)
-
 
 //Static file serving middleware to serve static files from ROOT_DIR
 app.use(express.static(path.join(__dirname, ROOT_DIR)))
@@ -88,7 +94,6 @@ app.get('/', (request, response) => {
     response.render('index', { title: 'EduChat' }) //Will render index.hbs with layout.hbs as the layout
 })
 
-
 app.get('/getRegistrationForm',  (request, response) => {
     response.render('registration', { title: 'Registration Page', layout: false })  //Renders registration.hbs without using layout.hbs
 })
@@ -100,6 +105,7 @@ app.get('/getLoginForm', (request, response) => {
 app.get('/chatroom', confirmAuthentication, (request, response) => {
     response.render('chatroom', { title: 'Chatroom' })
 })
+
 
 //404 Handler
 app.use((request, response) => {
@@ -116,7 +122,7 @@ app.listen(PORT, err => {
           console.log(`To Test:`)
           console.log('http://localhost:3000/')
           console.log('http://localhost:3000/index.html')
-		  console.log('http://localhost:3000/users')
+		  console.log('http://localhost:3000/viewUsers')
       }
   })
 

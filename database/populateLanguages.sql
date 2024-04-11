@@ -1,3 +1,8 @@
+-- COMP 2406 Final Term Project
+-- By Ibraheem Refai
+-- 101259968
+-- April 10, 2024
+
 INSERT INTO Languages (language_id, language_name) VALUES (1, 'English');
 INSERT INTO Languages (language_id, language_name) VALUES (2, 'Mandarin');
 INSERT INTO Languages (language_id, language_name) VALUES (3, 'Hindi');

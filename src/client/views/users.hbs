@@ -1,0 +1,14 @@
+{{!-- 
+COMP 2406 Final Term Project
+By Ibraheem Refai
+101259968
+April 10, 2024
+--}}
+
+<h1>Users</h1>
+<ul>
+    {{#each users}}
+        <li>ID: {{this.student_id}}, Name: {{this.first_name}} {{this.last_name}}, Email: {{this.email}}, Password: {{this.password}}, Admin: {{this.isAdmin}}</li>
+    {{/each}}
+</ul>
+<button id="backToChatroomBtn">Back to Chatroom</button>
