@@ -9,7 +9,7 @@ April 10, 2024
 //Source Cited: https://platform.openai.com/docs/api-reference/introduction
 
 //Open AI API key - Don't steal this please );
-const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY || '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'
+const OPEN_AI_API_KEY = process.env.OPEN_AI_API_KEY
 
 const express = require('express')
 const router = express.Router()
